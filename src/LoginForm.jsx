@@ -1,23 +1,21 @@
 // LoginForm.js
 
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useState } from 'react'
+import styled from 'styled-components'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from 'react-router-dom'
 
 function LoginForm() {
   const [TOKEN, setToken] = useState(null)
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
   const fetchToken = async () => {
+    // test
     try {
-      await axios.post(
-        'https://tms-stag.tgl-cloud.com/graphql/',
-        {
+      await axios
+        .post('https://tms-stag.tgl-cloud.com/graphql/', {
           query: `
           mutation {
             login (loginInput: {
@@ -28,21 +26,20 @@ function LoginForm() {
             }
           }
         `
-        }
-      ).then ((response) =>   
-      {setToken(response.data.data.login.token)
-        localStorage.setItem('token', response.data.data.login.token)
-        navigate("/home")
-      })
-    
+        })
+        .then((response) => {
+          setToken(response.data.data.login.token)
+          localStorage.setItem('token', response.data.data.login.token)
+          navigate('/home')
+        })
     } catch (error) {
-      alert("Thất Bại")
+      alert('Thất Bại')
       console.error(error)
     }
   }
 
   function handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault()
 
     fetchToken()
   }
@@ -51,20 +48,27 @@ function LoginForm() {
     <Form onSubmit={handleSubmit}>
       <Label>
         Email:
-        <Input type="string" value={email} onChange={(event) => setEmail(event.target.value)} />
+        <Input
+          type='string'
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
       </Label>
       <Label>
         Password:
-        <Input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+        <Input
+          type='password'
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+        />
       </Label>
-      <Button type="submit">Login</Button>
+      <Button type='submit'>Login</Button>
     </Form>
-  );
+  )
 }
 export default LoginForm
 
 const Form = styled.form`
-
   border: 1px #333 solid;
   border-bottom: none;
   border-radius: 10px;
@@ -79,15 +83,14 @@ const Form = styled.form`
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-
-`;
+`
 
 const Label = styled.label`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-`;
+`
 
 const Input = styled.input`
   padding: 8px;
@@ -95,7 +98,7 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 16px;
   width: 100%;
-`;
+`
 
 const Button = styled.button`
   padding: 8px;
@@ -104,4 +107,4 @@ const Button = styled.button`
   border-radius: 4px;
   font-size: 16px;
   width: 100%;
-`;
+`
