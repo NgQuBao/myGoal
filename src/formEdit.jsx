@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 function EditGoal({ isShow, data, onClose, refetch }) {
   const [TOKEN, setTOKEN] = useState(localStorage.getItem('token'))
+  const TGLCODE = localStorage.getItem('tglCode')
 
   const [formData, setFormData] = useState({
     goalName: data.goalName,
@@ -12,7 +13,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
     description: data.description,
     targetTimeFrom: data.targetTimeFrom,
     targetTimeTo: data.targetTimeTo,
-    tglCode: '0000'
+    tglCode: '${TGLCODE}'
   })
 
   const [errors, setErrors] = useState({
@@ -57,7 +58,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
     description: "${formData.description}"
     targetTimeFrom: "${formData.targetTimeFrom}"
     targetTimeTo: "${formData.targetTimeTo}"
-    tglCode: "0000"
+    tglCode: "${TGLCODE}"
               }) {
               goalName
               }

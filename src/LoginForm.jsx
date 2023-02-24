@@ -19,6 +19,7 @@ function LoginForm() {
               password : "${password}"
             }) {
               token
+              tglCode
             }
           }
         `
@@ -26,6 +27,7 @@ function LoginForm() {
         .then((response) => {
           setToken(response.data.data.login.token)
           localStorage.setItem('token', response.data.data.login.token)
+          localStorage.setItem('tglCode', response.data.data.login.tglCode)
           navigate('/home')
         })
     } catch (error) {

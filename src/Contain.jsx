@@ -9,6 +9,7 @@ import EditGoal from './formEdit'
 
 function Contain() {
   const [TOKEN, setTOKEN] = useState(localStorage.getItem('token'))
+  const TGLCODE = localStorage.getItem('tglCode')
   const [data, setData] = useState(null)
   const [dataForEdit, setDataForEdit] = useState(null)
   const [idGoal, setIdGoal] = useState(null)
@@ -66,7 +67,7 @@ function Contain() {
     description: '',
     targetTimeFrom: '',
     targetTimeTo: '',
-    tglCode: '0000'
+    tglCode: '${TGLCODE}'
   })
 
   const [errors, setErrors] = useState({
@@ -110,7 +111,7 @@ function Contain() {
               description: "${formData.description}"
               targetTimeFrom: "${formData.targetTimeFrom}"
               targetTimeTo: "${formData.targetTimeTo}"
-              tglCode: "0000"
+              tglCode: "$   {TGLCODE}"
             }) {
               goalName
             }
