@@ -49,7 +49,6 @@ function Contain() {
           }
         )
         setData(response.data.data.allOperationGoal.items)
-        console.log(response.data.data.allOperationGoal.items)
       } catch (error) {
         console.error(error)
         navigate('/')
@@ -60,7 +59,6 @@ function Contain() {
       fetchOperationGoals()
     }
   }, [TOKEN, isRefetch])
-  console.log(item)
 
   const [formData, setFormData] = useState({
     goalName: '',
@@ -127,7 +125,6 @@ function Contain() {
         )
         .then((response) => {
           setIsRefetch(!isRefetch)
-          console.log(response)
         })
     } catch (error) {
       alert('Thất Bại')
@@ -141,7 +138,6 @@ function Contain() {
     setErrors(errors)
     if (Object.keys(errors).length === 0) {
       handleSubmited()
-      console.log(formData)
     }
   }
 

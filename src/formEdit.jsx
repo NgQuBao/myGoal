@@ -4,7 +4,6 @@ import axios from 'axios'
 import styled from 'styled-components'
 
 function EditGoal({ isShow, data, onClose, refetch }) {
-  console.log('============', data)
   const [TOKEN, setTOKEN] = useState(localStorage.getItem('token'))
 
   const [formData, setFormData] = useState({
@@ -72,7 +71,6 @@ function EditGoal({ isShow, data, onClose, refetch }) {
           }
         )
         .then((response) => {
-          console.log(response)
           onClose()
           refetch()
         })
@@ -88,7 +86,6 @@ function EditGoal({ isShow, data, onClose, refetch }) {
     setErrors(errors)
     if (Object.keys(errors).length === 0) {
       handleSubmited()
-      console.log(formData)
     }
   }
 
