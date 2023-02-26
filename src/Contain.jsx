@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react'
-import React from 'react'
-import axios from 'axios'
-import styled from 'styled-components'
-import ConfirmationModal from './Confirm'
-import { useNavigate } from 'react-router-dom'
-import { Spin } from 'antd'
-import EditGoal from './formEdit'
+import { useCallback, useEffect, useState } from "react";
+import React from "react";
+import axios from "axios";
+import styled from "styled-components";
+import ConfirmationModal from "./Confirm";
+import { useNavigate } from "react-router-dom";
+import { Spin } from "antd";
+import EditGoal from "./formEdit";
 
 function Contain() {
-  const [TOKEN, setTOKEN] = useState(localStorage.getItem('token'))
-  const TGLCODE = localStorage.getItem('tglCode')
-  const [data, setData] = useState(null)
-  const [dataForEdit, setDataForEdit] = useState(null)
-  const [idGoal, setIdGoal] = useState(null)
-  const [item, setItem] = useState(null)
-  const [isShow, setIsShow] = useState(false)
-  const [isEdit, setIsEdit] = useState(false)
-  const [isRefetch, setIsRefetch] = useState(false)
+  const [TOKEN, setTOKEN] = useState(localStorage.getItem("token"));
+  const TGLCODE = localStorage.getItem("tglCode");
+  const [data, setData] = useState(null);
+  const [dataForEdit, setDataForEdit] = useState(null);
+  const [idGoal, setIdGoal] = useState(null);
+  const [item, setItem] = useState(null);
+  const [isShow, setIsShow] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isRefetch, setIsRefetch] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOperationGoals = async () => {
       try {
         const response = await axios.post(
-          'https://tms-stag.tgl-cloud.com/graphql/',
+          "https://tms-stag.tgl-cloud.com/graphql/",
           {
             query: `
               query {
@@ -41,123 +41,137 @@ function Contain() {
                   totalCount
                 }
               }
-            `
+            `,
           },
           {
             headers: {
-              Authorization: `Bearer ${TOKEN}`
-            }
+              Authorization: `Bearer ${TOKEN}`,
+            },
           }
-        )
-        setData(response.data.data.allOperationGoal.items)
+        );
+        setData(response.data.data.allOperationGoal.items);
       } catch (error) {
-        console.error(error)
-        navigate('/')
+        console.error(error);
+        navigate("/");
       }
-    }
+    };
 
     if (TOKEN) {
-      fetchOperationGoals()
+      fetchOperationGoals();
     }
-  }, [TOKEN, isRefetch])
+  }, [TOKEN, isRefetch]);
 
   const [formData, setFormData] = useState({
-    goalName: '',
-    colorIndex: '',
-    description: '',
-    targetTimeFrom: '',
-    targetTimeTo: '',
-    tglCode: '${TGLCODE}'
-  })
+    goalName: "",
+    colorIndex: "",
+    description: "",
+    targetTimeFrom: "",
+    targetTimeTo: "",
+    tglCode: `${TGLCODE ?? ""}`,
+  });
 
   const [errors, setErrors] = useState({
-    goalName: '',
-    colorIndex: '',
-    targetTimeFrom: '',
-    targetTimeTo: ''
-  })
+    goalName: "",
+    colorIndex: "",
+    targetTimeFrom: "",
+    targetTimeTo: "",
+  });
 
-  const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value })
-    setErrors('')
-  }
-  const validateForm = () => {
-    const newErrors = {}
+  const handleChange = useCallback(
+    (event) => {
+      setFormData({ ...formData, [event.target.name]: event.target.value });
+      setErrors("");
+    },
+    [formData]
+  );
+
+  const validateForm = useCallback(() => {
+    const newErrors = {};
     if (!formData.goalName) {
-      newErrors.goalName = 'bạn chưa nhập'
+      newErrors.goalName = "bạn chưa nhập";
     }
     if (!formData.colorIndex) {
-      newErrors.colorIndex = 'bạn chưa nhập'
+      newErrors.colorIndex = "bạn chưa nhập";
     }
     if (!formData.targetTimeFrom) {
-      newErrors.targetTimeFrom = 'bạn chưa nhập'
+      newErrors.targetTimeFrom = "bạn chưa nhập";
     }
     if (!formData.targetTimeTo) {
-      newErrors.targetTimeTo = 'bạn chưa nhập'
+      newErrors.targetTimeTo = "bạn chưa nhập";
     }
-    return newErrors
-  }
-  const handleSubmited = async () => {
-    try {
-      await axios
-        .post(
-          'https://tms-stag.tgl-cloud.com/graphql/',
-          {
-            query: `
-          mutation{
-            createOperationGoal(input: {
-              colorIndex: "${formData.colorIndex}"
-              goalName:"${formData.goalName}"
-              description: "${formData.description}"
-              targetTimeFrom: "${formData.targetTimeFrom}"
-              targetTimeTo: "${formData.targetTimeTo}"
-              tglCode: "$   {TGLCODE}"
-            }) {
-              goalName
-            }
-          }
-        `
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${TOKEN}`
-            }
-          }
-        )
-        .then((response) => {
-          setIsRefetch(!isRefetch)
-        })
-    } catch (error) {
-      alert('Thất Bại')
-      console.error(error)
-    }
-  }
+    return newErrors;
+  }, [formData]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    const errors = validateForm()
-    setErrors(errors)
-    if (Object.keys(errors).length === 0) {
-      handleSubmited()
+  const handleSubmited = useCallback(async () => {
+    try {
+      await axios.post(
+        "https://tms-stag.tgl-cloud.com/graphql/",
+        {
+          query: `
+            mutation{
+              createOperationGoal(input: {
+                colorIndex: "${formData.colorIndex}"
+                goalName:"${formData.goalName}"
+                description: "${formData.description}"
+                targetTimeFrom: "${formData.targetTimeFrom}"
+                targetTimeTo: "${formData.targetTimeTo}"
+                tglCode: "${TGLCODE}"
+              }) {
+                goalName
+              }
+            }
+          `,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        }
+      );
+      setIsRefetch(!isRefetch);
+    } catch (error) {
+      alert("Thất Bại");
+      console.error(error);
     }
-  }
+  }, [
+    formData.colorIndex,
+    formData.goalName,
+    formData.description,
+    formData.targetTimeFrom,
+    formData.targetTimeTo,
+    isRefetch,
+    TGLCODE,
+    TOKEN,
+  ]);
+
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
+      const errors = validateForm();
+      setErrors(errors);
+      if (Object.keys(errors).length === 0) {
+        handleSubmited();
+      }
+    },
+    [validateForm, handleSubmited]
+  );
 
   return (
     <Container>
       <h1>My Goal</h1>
 
       <form onSubmit={handleSubmit}>
-        <div className='form-container'>
-          <div className='form-container-col1'>
-            <div className='FormItem'>
-              <label htmlFor='goalName'>
-                Goal name <sup>(*)</sup>{' '}
+        <div className="form-container">
+          <div className="form-container-col1">
+            <div className="FormItem">
+              <label htmlFor="goalName">
+                Goal name <sup>(*)</sup>{" "}
               </label>
-              <div className='FormItem_input'>
+              <div className="FormItem_input">
                 <input
-                  type='text'
-                  id='goalName'
-                  name='goalName'
+                  type="text"
+                  id="goalName"
+                  name="goalName"
                   value={formData.goalName}
                   onChange={handleChange}
                 />
@@ -167,15 +181,15 @@ function Contain() {
               </div>
             </div>
 
-            <div className='FormItem'>
-              <label htmlFor='colorIndex'>
+            <div className="FormItem">
+              <label htmlFor="colorIndex">
                 Color Index<sup>(*)</sup>
               </label>
-              <div className='FormItem_input'>
+              <div className="FormItem_input">
                 <input
-                  type='string'
-                  id='colorIndex'
-                  name='colorIndex'
+                  type="string"
+                  id="colorIndex"
+                  name="colorIndex"
                   value={formData.colorIndex}
                   onChange={handleChange}
                 />
@@ -185,15 +199,15 @@ function Contain() {
               </div>
             </div>
 
-            <div className='FormItem'>
-              <label htmlFor='targetTimeFrom'>
+            <div className="FormItem">
+              <label htmlFor="targetTimeFrom">
                 Ngày bắt đầu<sup>(*)</sup>
               </label>
-              <div className='FormItem_input'>
+              <div className="FormItem_input">
                 <input
-                  type='string'
-                  id='targetTimeFrom'
-                  name='targetTimeFrom'
+                  type="string"
+                  id="targetTimeFrom"
+                  name="targetTimeFrom"
                   value={formData.targetTimeFrom}
                   onChange={handleChange}
                 />
@@ -202,15 +216,15 @@ function Contain() {
                 )}
               </div>
             </div>
-            <div className='FormItem'>
-              <label htmlFor='targetTimeTo'>
+            <div className="FormItem">
+              <label htmlFor="targetTimeTo">
                 Ngày Kết Thúc<sup>(*)</sup>
               </label>
-              <div className='FormItem_input'>
+              <div className="FormItem_input">
                 <input
-                  type='string'
-                  id='targetTimeTo'
-                  name='targetTimeTo'
+                  type="string"
+                  id="targetTimeTo"
+                  name="targetTimeTo"
                   value={formData.targetTimeTo}
                   onChange={handleChange}
                 />
@@ -220,20 +234,20 @@ function Contain() {
               </div>
             </div>
           </div>
-          <div className='form-container-col2'>
-            <div className='FormItem'>
-              <label htmlFor='description'>Mô tả</label>
-              <div className='FormItem_input'>
+          <div className="form-container-col2">
+            <div className="FormItem">
+              <label htmlFor="description">Mô tả</label>
+              <div className="FormItem_input">
                 <input
-                  type='string'
-                  id='description'
-                  name='description'
+                  type="string"
+                  id="description"
+                  name="description"
                   value={formData.description}
                   onChange={handleChange}
                 />
               </div>
-              <div className='submit_btn'>
-                <button type='submit' disabled={false}>
+              <div className="submit_btn">
+                <button type="submit" disabled={false}>
                   Thêm mới
                 </button>
               </div>
@@ -243,14 +257,14 @@ function Contain() {
       </form>
 
       {data ? (
-        <div className='cont'>
-          <div className='cont--1'>
+        <div className="cont">
+          <div className="cont--1">
             {data.map((item) => (
               <div key={item.goalId}>
                 <InfoContainer
                   onClick={() => setItem(item)}
                   style={{
-                    color: `${item.colorIndex}`
+                    color: `${item.colorIndex}`,
                   }}
                 >
                   <p>Name: {item.goalName}</p>
@@ -258,7 +272,7 @@ function Contain() {
               </div>
             ))}
           </div>
-          <div className='cont--2'>
+          <div className="cont--2">
             <h2>Detail</h2>
             {item ? (
               <>
@@ -270,20 +284,20 @@ function Contain() {
                 <p>To: {item.targetTimeTo}</p>
                 <div>
                   <button
-                    className='delete-btn'
+                    className="delete-btn"
                     onClick={() => {
-                      setIsShow(true)
-                      setIdGoal(item.goalId)
+                      setIsShow(true);
+                      setIdGoal(item.goalId);
                     }}
                   >
                     Delete
                   </button>
                   <button
                     onClick={() => {
-                      setDataForEdit(item)
-                      setIsEdit(true)
+                      setDataForEdit(item);
+                      setIsEdit(true);
                     }}
-                    className='delete-btn'
+                    className="delete-btn"
                   >
                     Edit
                   </button>
@@ -315,10 +329,10 @@ function Contain() {
         />
       )}
     </Container>
-  )
+  );
 }
 
-export default Contain
+export default Contain;
 
 const Container = styled.div`
   margin: 6vh;
@@ -420,7 +434,7 @@ const Container = styled.div`
       padding-left: 10px;
     }
   }
-`
+`;
 
 const InfoContainer = styled.div`
   flex: 2;
@@ -453,11 +467,11 @@ const InfoContainer = styled.div`
       background: antiquewhite;
     }
   }
-`
+`;
 const ErrorMessage = styled.div`
   color: #ff0000;
   margin-top: 5px;
   padding-left: 10px;
   position: absolute;
   font-style: italic;
-`
+`;

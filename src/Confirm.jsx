@@ -1,32 +1,32 @@
-import axios from 'axios'
-import React from 'react'
-import styled from 'styled-components'
+import axios from "axios";
+import React from "react";
+import styled from "styled-components";
 
 const ConfirmationModal = ({ TOKEN, id, isShow, onClose, refetch }) => {
   const Delete = async () => {
     try {
       const response = await axios.post(
-        'https://tms-stag.tgl-cloud.com/graphql/',
+        "https://tms-stag.tgl-cloud.com/graphql/",
         {
           query: `
-          mutation {
-            deleteGoals(goalIds:${id}){
+            mutation {
+              deleteGoals(goalIds:${id}){
+              }
             }
-          }
-          `
+          `,
         },
         {
           headers: {
-            Authorization: `Bearer ${TOKEN}`
-          }
+            Authorization: `Bearer ${TOKEN}`,
+          },
         }
-      )
-      refetch()
-      onClose()
+      );
+      refetch();
+      onClose();
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <>
@@ -42,10 +42,10 @@ const ConfirmationModal = ({ TOKEN, id, isShow, onClose, refetch }) => {
         </ModalContainer>
       )}
     </>
-  )
-}
+  );
+};
 
-export default ConfirmationModal
+export default ConfirmationModal;
 
 const ModalContainer = styled.div`
   background-color: #333;
@@ -60,7 +60,7 @@ const ModalContainer = styled.div`
   top: 30vh;
   left: 50%;
   transform: translateX(-50%);
-`
+`;
 
 const ModalContent = styled.div`
   background-color: #333;
@@ -69,13 +69,13 @@ const ModalContent = styled.div`
   padding: 1rem;
   max-width: 400px;
   text-align: center;
-`
+`;
 
 const ModalActions = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 1rem;
-`
+`;
 
 const Button = styled.button`
   padding: 0.5rem 1rem;
@@ -87,4 +87,4 @@ const Button = styled.button`
   &:hover {
     background-color: #ccc;
   }
-`
+`;

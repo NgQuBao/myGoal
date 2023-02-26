@@ -1,17 +1,18 @@
-import { useState } from 'react'
-import styled from 'styled-components'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useState, useCallback } from "react";
+import styled from "styled-components";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
-  const [TOKEN, setToken] = useState(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
-  const fetchToken = async () => {
+  const [TOKEN, setToken] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const fetchToken = useCallback(() => {
     try {
-      await axios
-        .post('https://tms-stag.tgl-cloud.com/graphql/', {
+      const response = axios
+        .post("https://tms-stag.tgl-cloud.com/graphql/", {
           query: `
           mutation {
             login (loginInput: {
@@ -22,24 +23,23 @@ function LoginForm() {
               tglCode
             }
           }
-        `
+        `,
         })
         .then((response) => {
-          setToken(response.data.data.login.token)
-          localStorage.setItem('token', response.data.data.login.token)
-          localStorage.setItem('tglCode', response.data.data.login.tglCode)
-          navigate('/home')
-        })
+          setToken(response.data.data.login.token);
+          localStorage.setItem("token", response.data.data.login.token);
+          localStorage.setItem("tglCode", response.data.data.login.tglCode);
+          navigate("/home");
+        });
     } catch (error) {
-      alert('Thất Bại')
-      console.error(error)
+      alert("Thất Bại");
+      console.error(error);
     }
-  }
+  }, [email, navigate, password]);
 
   function handleSubmit(event) {
-    event.preventDefault()
-
-    fetchToken()
+    event.preventDefault();
+    fetchToken();
   }
 
   return (
@@ -47,7 +47,7 @@ function LoginForm() {
       <Label>
         Email:
         <Input
-          type='string'
+          type="string"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
@@ -55,16 +55,17 @@ function LoginForm() {
       <Label>
         Password:
         <Input
-          type='password'
+          type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
       </Label>
-      <Button type='submit'>Login</Button>
+      <Button type="submit">Login</Button>
     </Form>
-  )
+  );
 }
-export default LoginForm
+
+export default LoginForm;
 
 const Form = styled.form`
   border: 1px #333 solid;
@@ -81,14 +82,14 @@ const Form = styled.form`
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-`
+`;
 
 const Label = styled.label`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-`
+`;
 
 const Input = styled.input`
   padding: 8px;
@@ -96,7 +97,7 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 16px;
   width: 100%;
-`
+`;
 
 const Button = styled.button`
   padding: 8px;
@@ -105,4 +106,4 @@ const Button = styled.button`
   border-radius: 4px;
   font-size: 16px;
   width: 100%;
-`
+`;
