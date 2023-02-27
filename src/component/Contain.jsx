@@ -1,30 +1,34 @@
-import { useCallback, useEffect, useState } from "react";
-import React from "react";
-import axios from "axios";
-import styled from "styled-components";
-import ConfirmationModal from "./Confirm";
-import { useNavigate } from "react-router-dom";
-import { Spin } from "antd";
-import EditGoal from "./formEdit";
+import { useCallback, useEffect, useState } from 'react'
+import React from 'react'
+import axios from 'axios'
+import styled from 'styled-components'
+import ConfirmationModal from '../Form/Confirm'
+import { useNavigate } from 'react-router-dom'
+import { Spin } from 'antd'
+import EditGoal from '../Form/formEdit'
+import contrastColorTextScore from '../utils/color'
+import StickySuccessAlert from '../utils/alert'
 
 function Contain() {
-  const [TOKEN, setTOKEN] = useState(localStorage.getItem("token"));
-  const TGLCODE = localStorage.getItem("tglCode");
-  const [data, setData] = useState(null);
-  const [dataForEdit, setDataForEdit] = useState(null);
-  const [idGoal, setIdGoal] = useState(null);
-  const [item, setItem] = useState(null);
-  const [isShow, setIsShow] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [isRefetch, setIsRefetch] = useState(false);
+  const [TOKEN, setTOKEN] = useState(localStorage.getItem('token'))
+  const TGLCODE = localStorage.getItem('tglCode')
+  const [data, setData] = useState(null)
+  const [dataForEdit, setDataForEdit] = useState(null)
+  const [idGoal, setIdGoal] = useState(null)
+  const [item, setItem] = useState(null)
+  const [isShow, setIsShow] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
+  const [isRefetch, setIsRefetch] = useState(false)
 
-  const navigate = useNavigate();
+  const today = new Date().toISOString().split('T')[0]
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchOperationGoals = async () => {
       try {
         const response = await axios.post(
-          "https://tms-stag.tgl-cloud.com/graphql/",
+          'https://tms-stag.tgl-cloud.com/graphql/',
           {
             query: `
               query {
@@ -41,71 +45,70 @@ function Contain() {
                   totalCount
                 }
               }
-            `,
+            `
           },
           {
             headers: {
-              Authorization: `Bearer ${TOKEN}`,
-            },
+              Authorization: `Bearer ${TOKEN}`
+            }
           }
-        );
-        setData(response.data.data.allOperationGoal.items);
+        )
+        setData(response.data.data.allOperationGoal.items)
       } catch (error) {
-        console.error(error);
-        navigate("/");
+        console.error(error)
+        navigate('/')
       }
-    };
+    }
 
     if (TOKEN) {
-      fetchOperationGoals();
+      fetchOperationGoals()
     }
-  }, [TOKEN, isRefetch]);
+  }, [TOKEN, isRefetch])
 
   const [formData, setFormData] = useState({
-    goalName: "",
-    colorIndex: "",
-    description: "",
-    targetTimeFrom: "",
-    targetTimeTo: "",
-    tglCode: `${TGLCODE ?? ""}`,
-  });
+    goalName: '',
+    colorIndex: '',
+    description: '',
+    targetTimeFrom: '',
+    targetTimeTo: ''
+  })
 
   const [errors, setErrors] = useState({
-    goalName: "",
-    colorIndex: "",
-    targetTimeFrom: "",
-    targetTimeTo: "",
-  });
+    goalName: '',
+    colorIndex: '',
+    targetTimeFrom: '',
+    targetTimeTo: ''
+  })
 
   const handleChange = useCallback(
     (event) => {
-      setFormData({ ...formData, [event.target.name]: event.target.value });
-      setErrors("");
+      setFormData({ ...formData, [event.target.name]: event.target.value })
+      setErrors('')
     },
     [formData]
-  );
+  )
 
   const validateForm = useCallback(() => {
-    const newErrors = {};
+    const newErrors = {}
     if (!formData.goalName) {
-      newErrors.goalName = "bạn chưa nhập";
+      newErrors.goalName = 'bạn chưa nhập'
     }
     if (!formData.colorIndex) {
-      newErrors.colorIndex = "bạn chưa nhập";
+      newErrors.colorIndex = 'bạn chưa nhập'
     }
     if (!formData.targetTimeFrom) {
-      newErrors.targetTimeFrom = "bạn chưa nhập";
+      newErrors.targetTimeFrom = 'bạn chưa nhập'
     }
     if (!formData.targetTimeTo) {
-      newErrors.targetTimeTo = "bạn chưa nhập";
+      newErrors.targetTimeTo = 'bạn chưa nhập'
     }
-    return newErrors;
-  }, [formData]);
+    return newErrors
+  }, [formData])
 
   const handleSubmited = useCallback(async () => {
     try {
       await axios.post(
-        "https://tms-stag.tgl-cloud.com/graphql/",
+        'https://tms-stag.tgl-cloud.com/graphql/',
         {
           query: `
             mutation{
@@ -120,18 +123,18 @@ function Contain() {
                 goalName
               }
             }
-          `,
+          `
         },
         {
           headers: {
-            Authorization: `Bearer ${TOKEN}`,
-          },
+            Authorization: `Bearer ${TOKEN}`
+          }
         }
-      );
-      setIsRefetch(!isRefetch);
+      )
+      setIsRefetch(!isRefetch)
     } catch (error) {
-      alert("Thất Bại");
-      console.error(error);
+      alert('Thất Bại')
+      console.error(error)
     }
   }, [
     formData.colorIndex,
@@ -140,38 +143,36 @@ function Contain() {
     formData.targetTimeFrom,
     formData.targetTimeTo,
     isRefetch,
-    TGLCODE,
-    TOKEN,
-  ]);
+    TOKEN
+  ])
+  console.log(data)
 
   const handleSubmit = useCallback(
     (event) => {
-      event.preventDefault();
-      const errors = validateForm();
-      setErrors(errors);
+      event.preventDefault()
+      const errors = validateForm()
+      setErrors(errors)
       if (Object.keys(errors).length === 0) {
-        handleSubmited();
+        handleSubmited()
       }
     },
     [validateForm, handleSubmited]
-  );
+  )
 
   return (
     <Container>
-      <h1>My Goal</h1>
-
       <form onSubmit={handleSubmit}>
-        <div className="form-container">
-          <div className="form-container-col1">
-            <div className="FormItem">
-              <label htmlFor="goalName">
-                Goal name <sup>(*)</sup>{" "}
+        <div className='form-container'>
+          <div className='form-container-col1'>
+            <div className='FormItem'>
+              <label htmlFor='goalName'>
+                Goal name <sup>*</sup>{' '}
               </label>
-              <div className="FormItem_input">
+              <div className='FormItem_input'>
                 <input
-                  type="text"
-                  id="goalName"
-                  name="goalName"
+                  type='text'
+                  id='goalName'
+                  name='goalName'
                   value={formData.goalName}
                   onChange={handleChange}
                 />
@@ -181,16 +182,16 @@ function Contain() {
               </div>
             </div>
 
-            <div className="FormItem">
-              <label htmlFor="colorIndex">
-                Color Index<sup>(*)</sup>
+            <div className='FormItem'>
+              <label htmlFor='colorIndex'>
+                Color Index<sup>*</sup>
               </label>
-              <div className="FormItem_input">
+              <div className='FormItem_input'>
                 <input
-                  type="string"
-                  id="colorIndex"
-                  name="colorIndex"
-                  value={formData.colorIndex}
+                  type='color'
+                  id='colorIndex'
+                  name='colorIndex'
+                  defaultValue='#00ff00'
                   onChange={handleChange}
                 />
                 {errors.colorIndex && (
@@ -199,15 +200,16 @@ function Contain() {
               </div>
             </div>
 
-            <div className="FormItem">
-              <label htmlFor="targetTimeFrom">
-                Ngày bắt đầu<sup>(*)</sup>
+            <div className='FormItem'>
+              <label htmlFor='targetTimeFrom'>
+                Ngày bắt đầu<sup>*</sup>
               </label>
-              <div className="FormItem_input">
+              <div className='FormItem_input'>
                 <input
-                  type="string"
-                  id="targetTimeFrom"
-                  name="targetTimeFrom"
+                  min={today}
+                  type='date'
+                  id='targetTimeFrom'
+                  name='targetTimeFrom'
                   value={formData.targetTimeFrom}
                   onChange={handleChange}
                 />
@@ -216,15 +218,15 @@ function Contain() {
                 )}
               </div>
             </div>
-            <div className="FormItem">
-              <label htmlFor="targetTimeTo">
-                Ngày Kết Thúc<sup>(*)</sup>
+            <div className='FormItem'>
+              <label htmlFor='targetTimeTo'>
+                Ngày Kết Thúc<sup>*</sup>
               </label>
-              <div className="FormItem_input">
+              <div className='FormItem_input'>
                 <input
-                  type="string"
-                  id="targetTimeTo"
-                  name="targetTimeTo"
+                  type='date'
+                  id='targetTimeTo'
+                  name='targetTimeTo'
                   value={formData.targetTimeTo}
                   onChange={handleChange}
                 />
@@ -234,20 +236,20 @@ function Contain() {
               </div>
             </div>
           </div>
-          <div className="form-container-col2">
-            <div className="FormItem">
-              <label htmlFor="description">Mô tả</label>
-              <div className="FormItem_input">
+          <div className='form-container-col2'>
+            <div className='FormItem'>
+              <label htmlFor='description'>Mô tả</label>
+              <div className='FormItem_input'>
                 <input
-                  type="string"
-                  id="description"
-                  name="description"
+                  type='string'
+                  id='description'
+                  name='description'
                   value={formData.description}
                   onChange={handleChange}
                 />
               </div>
-              <div className="submit_btn">
-                <button type="submit" disabled={false}>
+              <div className='submit_btn'>
+                <button type='submit' disabled={false}>
                   Thêm mới
                 </button>
               </div>
@@ -257,14 +259,15 @@ function Contain() {
       </form>
 
       {data ? (
-        <div className="cont">
-          <div className="cont--1">
+        <div className='cont'>
+          <div className='cont--1'>
             {data.map((item) => (
               <div key={item.goalId}>
                 <InfoContainer
                   onClick={() => setItem(item)}
                   style={{
-                    color: `${item.colorIndex}`,
+                    background: `${item.colorIndex}cc`,
+                    color: `${contrastColorTextScore(item.colorIndex)}`
                   }}
                 >
                   <p>Name: {item.goalName}</p>
@@ -272,7 +275,7 @@ function Contain() {
               </div>
             ))}
           </div>
-          <div className="cont--2">
+          <div className='cont--2'>
             <h2>Detail</h2>
             {item ? (
               <>
@@ -284,20 +287,20 @@ function Contain() {
                 <p>To: {item.targetTimeTo}</p>
                 <div>
                   <button
-                    className="delete-btn"
+                    className='delete-btn'
                     onClick={() => {
-                      setIsShow(true);
-                      setIdGoal(item.goalId);
+                      setIsShow(true)
+                      setIdGoal(item.goalId)
                     }}
                   >
                     Delete
                   </button>
                   <button
                     onClick={() => {
-                      setDataForEdit(item);
-                      setIsEdit(true);
+                      setDataForEdit(item)
+                      setIsEdit(true)
                     }}
-                    className="delete-btn"
+                    className='delete-btn'
                   >
                     Edit
                   </button>
@@ -328,24 +331,20 @@ function Contain() {
           refetch={() => setIsRefetch(!isRefetch)}
         />
       )}
+      <StickySuccessAlert apiStatus={isRefetch} />
     </Container>
-  );
+  )
 }
 
-export default Contain;
+export default Contain
 
 const Container = styled.div`
-  margin: 6vh;
-  min-height: 88vh;
+  margin: 0;
   border-radius: 20px;
-  background: #defcf9;
-  h1 {
-    text-align: center;
-    color: #3c84ab;
-    border-bottom: 1px #85cdfd solid;
-    padding: 20px;
-    margin: 0px;
-  }
+  background: #f6ffed;
+  color: #876800;
+  font-size: 16px;
+
   div {
     justify-content: center;
     display: flex;
@@ -355,18 +354,28 @@ const Container = styled.div`
   .cont {
     display: flex;
     padding: 40px 10px;
+
+    @media screen and (max-width: 980px) {
+      flex-direction: column;
+    }
   }
   .cont--1 {
     flex: 2;
     height: fit-content;
+
+    @media screen and (max-width: 660px) {
+      font-size: 14px;
+    }
   }
   .cont--2 {
     position: relative;
     display: block;
+    text-align: left;
     flex: 1;
-    background: #006d75;
+
+    background: #d9f7be;
     border-radius: 6px;
-    color: #defcf9;
+    color: #876800;
     padding: 0px 20px;
     min-height: 400px;
     h2 {
@@ -409,8 +418,21 @@ const Container = styled.div`
   }
   .form-container {
     display: flex;
+
+    @media screen and (max-width: 660px) {
+      flex-direction: column;
+    }
+
     label {
       width: 20%;
+
+      @media screen and (max-width: 980px) {
+        font-size: 14px;
+        width: 30%;
+      }
+      @media screen and (max-width: 660px) {
+        width: 25%;
+      }
     }
   }
   .form-container-col1 {
@@ -425,33 +447,66 @@ const Container = styled.div`
     display: flex;
     text-align: center;
     align-items: center;
+    label {
+      text-align: end;
+    }
   }
   .FormItem_input {
     width: 70%;
+
+    @media screen and (max-width: 980px) {
+      font-size: 14px;
+      width: 60%;
+    }
     input {
       width: 100%;
       height: 30px;
       padding-left: 10px;
     }
   }
-`;
+`
 
 const InfoContainer = styled.div`
   flex: 2;
-  padding: 0px 10px;
-  background: #fafafa;
-  border: 1px #002329 solid;
-  border-radius: 6px;
   text-align: center;
   align-items: center;
   position: relative;
   width: 200px;
   height: 80px;
+
+  padding: 0px 10px;
+
+  background: #fafafa;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  border: 1px #002329 solid;
+  border-radius: 6px;
+
+  animation-name: item-appear;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+
+  @keyframes item-appear {
+    from {
+      opacity: 0;
+      transform: translateY(100px) rotateX(150deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+
+  @media screen and (max-width: 660px) {
+    width: 160px;
+  }
   div {
     display: block;
     width: 100%;
+
     p {
-      margin: 0px;
+      margin: 0px !important;
+      margin-bottom: 0px !important;
     }
   }
   button {
@@ -467,11 +522,11 @@ const InfoContainer = styled.div`
       background: antiquewhite;
     }
   }
-`;
+`
 const ErrorMessage = styled.div`
   color: #ff0000;
   margin-top: 5px;
   padding-left: 10px;
   position: absolute;
   font-style: italic;
-`;
+`

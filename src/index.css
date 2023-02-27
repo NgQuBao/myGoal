@@ -5,9 +5,36 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  font-family: 'Roboto', 'Poppins', sans-serif;
+
+  overflow-x: hidden;
+  color: #c4c3ca;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.7;
+  background-color: #1f2029;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+input,
+button {
+  border-radius: 8px;
+  border: 1px #ccc solid;
+}
+
+input:hover {
+  cursor: pointer;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+input[type='date']::-webkit-calendar-picker-indicator {
+  font-size: 20px;
 }

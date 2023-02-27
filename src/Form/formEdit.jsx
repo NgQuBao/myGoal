@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
-import axios from "axios";
-import styled from "styled-components";
+import { useState, useMemo } from 'react'
+import axios from 'axios'
+import styled from 'styled-components'
 
 function EditGoal({ isShow, data, onClose, refetch }) {
-  const [TOKEN] = useState(localStorage.getItem("token"));
-  const TGLCODE = localStorage.getItem("tglCode");
+  const [TOKEN] = useState(localStorage.getItem('token'))
+  const TGLCODE = localStorage.getItem('tglCode')
+  const today = new Date().toISOString().split('T')[0]
 
   const formDataInitial = useMemo(
     () => ({
@@ -13,49 +14,49 @@ function EditGoal({ isShow, data, onClose, refetch }) {
       description: data.description,
       targetTimeFrom: data.targetTimeFrom,
       targetTimeTo: data.targetTimeTo,
-      tglCode: `${TGLCODE}`,
+      tglCode: `${TGLCODE}`
     }),
     [data, TGLCODE]
-  );
+  )
 
-  const [formData, setFormData] = useState(formDataInitial);
+  const [formData, setFormData] = useState(formDataInitial)
 
   const [errors, setErrors] = useState({
-    goalName: "",
-    colorIndex: "",
-    targetTimeFrom: "",
-    targetTimeTo: "",
-  });
+    goalName: '',
+    colorIndex: '',
+    targetTimeFrom: '',
+    targetTimeTo: ''
+  })
 
   const handleChange = (event) => {
     setFormData((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value,
-    }));
-    setErrors("");
-  };
+      [event.target.name]: event.target.value
+    }))
+    setErrors('')
+  }
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors = {}
     if (!formData.goalName) {
-      newErrors.goalName = "bạn chưa nhập";
+      newErrors.goalName = 'bạn chưa nhập'
     }
     if (!formData.colorIndex) {
-      newErrors.colorIndex = "bạn chưa nhập";
+      newErrors.colorIndex = 'bạn chưa nhập'
     }
     if (!formData.targetTimeFrom) {
-      newErrors.targetTimeFrom = "bạn chưa nhập";
+      newErrors.targetTimeFrom = 'bạn chưa nhập'
     }
     if (!formData.targetTimeTo) {
-      newErrors.targetTimeTo = "bạn chưa nhập";
+      newErrors.targetTimeTo = 'bạn chưa nhập'
     }
-    return newErrors;
-  };
+    return newErrors
+  }
 
   const handleSubmited = async () => {
     try {
       await axios.post(
-        "https://tms-stag.tgl-cloud.com/graphql/",
+        'https://tms-stag.tgl-cloud.com/graphql/',
         {
           query: `
             mutation {
@@ -71,51 +72,51 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                 goalName
               }
             }
-          `,
+          `
         },
         {
           headers: {
-            Authorization: `Bearer ${TOKEN}`,
-          },
+            Authorization: `Bearer ${TOKEN}`
+          }
         }
-      );
-      onClose();
-      refetch();
+      )
+      onClose()
+      refetch()
     } catch (error) {
-      alert("Thất Bại");
-      console.error(error);
+      alert('Thất Bại')
+      console.error(error)
     }
-  };
+  }
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const errors = validateForm();
-    setErrors(errors);
+    event.preventDefault()
+    const errors = validateForm()
+    setErrors(errors)
     if (Object.keys(errors).length === 0) {
-      handleSubmited();
+      handleSubmited()
     }
-  };
+  }
 
   const { goalName, colorIndex, targetTimeFrom, targetTimeTo, description } =
-    formData;
-  const isDisabled = Object.keys(errors).length > 0;
+    formData
+  const isDisabled = Object.keys(errors).length > 0
 
   return (
     <>
       {isShow && (
         <Container>
           <form onSubmit={handleSubmit}>
-            <div className="form-container">
-              <div className="form-container-col1">
-                <div className="FormItem">
-                  <label htmlFor="goalName">
-                    Goal name <sup>(*)</sup>{" "}
+            <div className='form-container'>
+              <div className='form-container-col1'>
+                <div className='FormItem'>
+                  <label htmlFor='goalName'>
+                    Goal name <sup>*</sup>{' '}
                   </label>
-                  <div className="FormItem_input">
+                  <div className='FormItem_input'>
                     <input
-                      type="text"
-                      id="goalName"
-                      name="goalName"
+                      type='text'
+                      id='goalName'
+                      name='goalName'
                       value={formData.goalName}
                       onChange={handleChange}
                     />
@@ -125,15 +126,15 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                   </div>
                 </div>
 
-                <div className="FormItem">
-                  <label htmlFor="colorIndex">
-                    Color Index<sup>(*)</sup>
+                <div className='FormItem'>
+                  <label htmlFor='colorIndex'>
+                    Color Index<sup>*</sup>
                   </label>
-                  <div className="FormItem_input">
+                  <div className='FormItem_input'>
                     <input
-                      type="color"
-                      id="colorIndex"
-                      name="colorIndex"
+                      type='color'
+                      id='colorIndex'
+                      name='colorIndex'
                       value={formData.colorIndex}
                       onChange={handleChange}
                     />
@@ -143,15 +144,16 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                   </div>
                 </div>
 
-                <div className="FormItem">
-                  <label htmlFor="targetTimeFrom">
-                    Ngày bắt đầu<sup>(*)</sup>
+                <div className='FormItem'>
+                  <label htmlFor='targetTimeFrom'>
+                    Ngày bắt đầu<sup>*</sup>
                   </label>
-                  <div className="FormItem_input">
+                  <div className='FormItem_input'>
                     <input
-                      type="string"
-                      id="targetTimeFrom"
-                      name="targetTimeFrom"
+                      type='date'
+                      min={today}
+                      id='targetTimeFrom'
+                      name='targetTimeFrom'
                       value={formData.targetTimeFrom}
                       onChange={handleChange}
                     />
@@ -160,15 +162,15 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                     )}
                   </div>
                 </div>
-                <div className="FormItem">
-                  <label htmlFor="targetTimeTo">
-                    Ngày Kết Thúc<sup>(*)</sup>
+                <div className='FormItem'>
+                  <label htmlFor='targetTimeTo'>
+                    Ngày Kết Thúc<sup>*</sup>
                   </label>
-                  <div className="FormItem_input">
+                  <div className='FormItem_input'>
                     <input
-                      type="string"
-                      id="targetTimeTo"
-                      name="targetTimeTo"
+                      type='date'
+                      id='targetTimeTo'
+                      name='targetTimeTo'
                       value={formData.targetTimeTo}
                       onChange={handleChange}
                     />
@@ -179,22 +181,22 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                 </div>
               </div>
 
-              <div className="FormItem">
-                <label htmlFor="description">Mô tả</label>
-                <div className="FormItem_input">
+              <div className='FormItem'>
+                <label htmlFor='description'>Mô tả</label>
+                <div className='FormItem_input'>
                   <input
-                    type="string"
-                    id="description"
-                    name="description"
+                    type='string'
+                    id='description'
+                    name='description'
                     value={formData.description}
                     onChange={handleChange}
                   />
                 </div>
-                <div className="submit_btn">
-                  <button type="submit" disabled={false}>
+                <div className='submit_btn'>
+                  <button type='submit' disabled={false}>
                     Xác Nhận
                   </button>
-                  <button type="string" onClick={() => onClose()}>
+                  <button type='string' onClick={() => onClose()}>
                     Hủy bỏ
                   </button>
                 </div>
@@ -204,10 +206,10 @@ function EditGoal({ isShow, data, onClose, refetch }) {
         </Container>
       )}
     </>
-  );
+  )
 }
 
-export default EditGoal;
+export default EditGoal
 
 const Container = styled.div`
   width: 500px;
@@ -297,7 +299,7 @@ const Container = styled.div`
       padding-left: 10px;
     }
   }
-`;
+`
 
 const ErrorMessage = styled.div`
   color: #ff0000;
@@ -305,4 +307,4 @@ const ErrorMessage = styled.div`
   padding-left: 10px;
   position: absolute;
   font-style: italic;
-`;
+`
