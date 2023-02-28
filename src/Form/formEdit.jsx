@@ -117,7 +117,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                       type='text'
                       id='goalName'
                       name='goalName'
-                      value={formData.goalName}
+                      defaultValue={formData.goalName}
                       onChange={handleChange}
                     />
                     {errors.goalName && (
@@ -135,7 +135,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                       type='color'
                       id='colorIndex'
                       name='colorIndex'
-                      value={formData.colorIndex}
+                      defaultValue={formData.colorIndex}
                       onChange={handleChange}
                     />
                     {errors.colorIndex && (
@@ -154,7 +154,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                       min={today}
                       id='targetTimeFrom'
                       name='targetTimeFrom'
-                      value={formData.targetTimeFrom}
+                      defaultValue={formData.targetTimeFrom}
                       onChange={handleChange}
                     />
                     {errors.targetTimeFrom && (
@@ -171,7 +171,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                       type='date'
                       id='targetTimeTo'
                       name='targetTimeTo'
-                      value={formData.targetTimeTo}
+                      defaultValue={formData.targetTimeTo}
                       onChange={handleChange}
                     />
                     {errors.targetTimeTo && (
@@ -188,7 +188,7 @@ function EditGoal({ isShow, data, onClose, refetch }) {
                     type='string'
                     id='description'
                     name='description'
-                    value={formData.description}
+                    defaultValue={formData.description}
                     onChange={handleChange}
                   />
                 </div>

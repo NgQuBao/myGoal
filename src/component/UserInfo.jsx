@@ -23,26 +23,28 @@ function UserInfoPage() {
         <Name>{Userdata.shortName}</Name>
         <Email>{Userdata.email}</Email>
         <table>
-          <tr>
-            <td className='first-col'>AccountStatus</td>
-            <td className='second-col'>{Userdata.accountStatus}</td>
-          </tr>
-          <tr>
-            <td className='first-col'>FullName</td>
-            <td className='second-col'>{Userdata.fullName}</td>
-          </tr>
-          <tr>
-            <td className='first-col'>Gender</td>
-            <td className='second-col'>{Userdata.gender}</td>
-          </tr>
-          <tr>
-            <td className='first-col'>Joined-At</td>
-            <td className='second-col'>{Userdata.joinedAt}</td>
-          </tr>
-          <tr>
-            <td className='first-col'>TGLCode</td>
-            <td className='second-col'>{Userdata.tglCode}</td>
-          </tr>
+          <tbody>
+            <tr>
+              <td className='first-col'>AccountStatus</td>
+              <td className='second-col'>{Userdata.accountStatus}</td>
+            </tr>
+            <tr>
+              <td className='first-col'>FullName</td>
+              <td className='second-col'>{Userdata.fullName}</td>
+            </tr>
+            <tr>
+              <td className='first-col'>Gender</td>
+              <td className='second-col'>{Userdata.gender}</td>
+            </tr>
+            <tr>
+              <td className='first-col'>Joined-At</td>
+              <td className='second-col'>{Userdata.joinedAt}</td>
+            </tr>
+            <tr>
+              <td className='first-col'>TGLCode</td>
+              <td className='second-col'>{Userdata.tglCode}</td>
+            </tr>
+          </tbody>
         </table>
         <Button
           onClick={logOut}

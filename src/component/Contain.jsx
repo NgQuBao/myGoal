@@ -145,7 +145,6 @@ function Contain() {
     isRefetch,
     TOKEN
   ])
-  console.log(data)
 
   const handleSubmit = useCallback(
     (event) => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -15,20 +15,33 @@ const { Header, Sider, Content } = Layout
 
 const HomePage = ({ isShowUser }) => {
   const [collapsed, setCollapsed] = useState(false)
+  const navigate = useNavigate()
+
+  const MENU = [
+    {
+      label: 'User',
+      key: '/users',
+      icon: <UserOutlined />
+    },
+    {
+      label: 'Goal',
+      key: '/home',
+      icon: <VideoCameraOutlined />
+    }
+  ]
 
   return (
     <ConTainer>
       <Layout>
         <Sider trigger={null} collapsible collapsed={collapsed}>
           <div className='logo' />
-          <Menu theme='dark' mode='inline' defaultSelectedKeys={['2']}>
-            <Menu.Item key='1' icon={<UserOutlined />}>
-              <Link to='/users'>User</Link>
-            </Menu.Item>
-            <Menu.Item key='2' icon={<VideoCameraOutlined />}>
-              <Link to='/home'>Goal</Link>
-            </Menu.Item>
-          </Menu>
+          <Menu
+            theme='dark'
+            mode='inline'
+            defaultSelectedKeys={['2']}
+            items={MENU}
+            onSelect={(value) => navigate(value.key)}
+          />
         </Sider>
         <Layout className='site-layout'>
           <Header

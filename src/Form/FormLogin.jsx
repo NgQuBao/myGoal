@@ -48,7 +48,6 @@ const FormLogin = () => {
             'userInfo',
             JSON.stringify(response.data.data.login)
           )
-          console.log(response.data.data.login)
           navigate('/home')
         })
     } catch (error) {
